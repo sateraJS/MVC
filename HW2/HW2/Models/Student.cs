@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,7 +8,11 @@ namespace HW2.Models
 {
     public class Student
     {
+        [Required]
+        [IdValidation]
         public int ID { get; set; }
+        [Required]
+        [MinLength(5)]
         public string FIO { get; set; }
         public DateTime Birthday { get; set; }
 

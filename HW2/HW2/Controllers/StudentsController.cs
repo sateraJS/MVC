@@ -16,60 +16,76 @@ namespace HW2.Controllers
         //    _myListStudents.List = new Dictionary<int, Student>();
         //    _myListStudents.List.Add(1, new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), FIO = "Иванов_Иван_Иванович" });
         //}
-        public string createNewStudent(int id, string fio, string birthday)
+        [HttpPost]
+        public IActionResult createNewStudent([FromBody] Student student)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
-                _myListStudents.List.Add(id, new Student() { ID = id, Birthday = DateTime.Parse(birthday), FIO = fio });
-                return string.Format("Студент : {0}, {1} - успешно добавлен", id, fio);
+                //var newStudent = new Student() { ID = student.ID, Birthday = DateTime.Parse(student.Birthday.ToString()), FIO = student.FIO};
+                _myListStudents.List.Add(student.ID, student);
+                return Json(student);//string.Format("Студент : {0}, {1} - успешно добавлен", id, fio);
             }
             catch(Exception e)
             {
-                return string.Format("Студент : {0}, {1} - не удалось добавить", id, fio);
+                return BadRequest(ModelState);
             }
 
         }
 
-        public string getStudentById(int id)
+        [HttpGet]
+        public IActionResult getStudentById(int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             if (_myListStudents.List.ContainsKey(id))
-                return _myListStudents.List[id].ToString();
+                return Json(_myListStudents.List[id]);
             else
-                return string.Format("Не удалось найти студента с id={0}", id);
+                return BadRequest(ModelState);
         }
 
-        public string updateStudent(int id, string fio, string birthday)
+        [HttpGet]
+        public IActionResult updateStudent(int id, string fio, string birthday)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             if (_myListStudents.List.ContainsKey(id))
             {
                 _myListStudents.List[id].Birthday = DateTime.Parse(birthday);
                 _myListStudents.List[id].FIO = fio;
-                return _myListStudents.List[id].ToString() + " - успешно обновлен";
+                return Json(_myListStudents.List[id]);
             }
             else
             {
                 _myListStudents.List.Add(id, new Student() { ID = id, Birthday = DateTime.Parse(birthday), FIO = fio });
-                return _myListStudents.List[id].ToString() + " - успешно обновлен";
+                return Json(_myListStudents.List[id]);
             }
         }
 
-        public string deleteStudent(int id)
+        [HttpGet]
+        public IActionResult deleteStudent(int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             if (_myListStudents.List.ContainsKey(id))
             {
                 _myListStudents.List.Remove(id);
-                return string.Format("Удален студент с id={0}", id);
+                return getAllStudents();
             }
             else
-                return string.Format("Не удалось найти студента с id={0}", id);
+                return BadRequest(ModelState);
         }
 
-        public string getAllStudents()
+        [HttpGet]
+        public IActionResult getAllStudents()
         {
-            var result = string.Empty;
-            foreach (var student in _myListStudents.List)
-                result += student.Value.ToString()+"\n";
-            return result;
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            //var result = string.Empty;
+            //foreach (var student in _myListStudents.List)
+            //    result += student.Value.ToString()+"\n";
+            return Json(_myListStudents);
         }
     }
 }
