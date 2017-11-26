@@ -8,21 +8,30 @@ namespace HW2.Models
 {
     public class Student
     {
-        [Required]
-        [IdValidation]
+        //[Required]
+        //[IdValidation]
         public int ID { get; set; }
+
+        [Display(Name = "Фамилия")]
         [Required]
-        [MinLength(5)]
-        public string FIO { get; set; }
+        [MinLength(1)]
+        public string LastName { get; set; }
+
+        [Display(Name = "Имя")]
+        [Required]
+        [MinLength(1)]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Дата рождения")]
         public DateTime Birthday { get; set; }
 
         public string ToString()
         {
-            return string.Format("id = {0}; ФИО = {1}; Дата рождения = {2}", ID, FIO, Birthday);
+            return string.Format("id = {0}; ФИ = {1} {2}; Дата рождения = {3}", ID, LastName, FirstName, Birthday);
         }
     }
     public class Students
     {
-        public Dictionary<int, Student> List{ get; set; }
+        public List<Student> List{ get; set; }
     }
 }

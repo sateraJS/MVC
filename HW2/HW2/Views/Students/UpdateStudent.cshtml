@@ -1,0 +1,38 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "Редактор";
+}
+<div id="student">
+@using (Html.BeginForm("UpdateStudent", "Students", Model, FormMethod.Post))
+{
+    <div>
+        <a class="btn btn-primary" href="@Url.Action("DeleteStudent", "Students", new {id = Model.ID})">Удалить студента</a>
+    </div>
+    <table title="Cтудент">
+        <tr>
+            <td>@Html.DisplayNameFor(x => x.LastName)</td>
+            <td>
+                @Html.EditorFor(x => x.LastName)
+                @Html.ValidationMessageFor(x => x.LastName)
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(x => x.FirstName)</td>
+            <td>
+                @Html.EditorFor(x => x.FirstName)
+                @Html.ValidationMessageFor(x => x.FirstName)
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(x => x.Birthday)</td>
+            <td>
+                @Html.EditorFor(x => x.Birthday)
+                @Html.ValidationMessageFor(x => x.Birthday)
+            </td>
+        </tr>
+    </table>
+
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+        <button class="btn btn-primary" href="@Url.Action("Index", "Students")">Отменить</button>
+}
+</div>

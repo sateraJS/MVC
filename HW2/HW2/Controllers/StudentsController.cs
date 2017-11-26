@@ -9,23 +9,39 @@ namespace HW2.Controllers
 {
     public class StudentsController : Controller
     {
-        private static Students _myListStudents = new Students() { List = new Dictionary<int, Student>() { { 1, new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), FIO = "Иванов_Иван_Иванович" } } } };
-        //public StudentsController()
-        //{
-        //    _myListStudents = new Students();
-        //    _myListStudents.List = new Dictionary<int, Student>();
-        //    _myListStudents.List.Add(1, new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), FIO = "Иванов_Иван_Иванович" });
-        //}
+        private static Students _myListStudents;// = new Students() { List = new Dictionary<int, Student>() { { 1, new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), FIO = "Иванов_Иван_Иванович" } } } };
+        
+        public IActionResult Index()
+        {
+            if (_myListStudents == null)
+            {
+                _myListStudents = new Students();
+                _myListStudents.List = new List<Student>();
+                _myListStudents.List.Add(new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), LastName = "Иванов", FirstName = "Иван" });
+                _myListStudents.List.Add(new Student() { ID = 2, Birthday = DateTime.Parse("10.09.1992"), LastName = "Петров", FirstName = "Петр" });
+                _myListStudents.List.Add(new Student() { ID = 3, Birthday = DateTime.Parse("13.08.1993"), LastName = "Сидоров", FirstName = "Илья" });
+            }
+            return View(_myListStudents);
+        }
+
+        [HttpGet]
+        public IActionResult CreateStudent()
+        {
+            var student = new Student();
+            return View("CreateNewStudent", student);
+        }
+
         [HttpPost]
-        public IActionResult createNewStudent([FromBody] Student student)
+        public IActionResult CreateNewStudent(Student student)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                //var newStudent = new Student() { ID = student.ID, Birthday = DateTime.Parse(student.Birthday.ToString()), FIO = student.FIO};
-                _myListStudents.List.Add(student.ID, student);
-                return Json(student);//string.Format("Студент : {0}, {1} - успешно добавлен", id, fio);
+                student.ID = _myListStudents.List.Max(x => x.ID) + 1;
+                _myListStudents.List.Add(student);
+                var newStudent = _myListStudents.List.FirstOrDefault(x => x.ID == student.ID);
+                return View("GetStudentById", newStudent);
             }
             catch(Exception e)
             {
@@ -35,57 +51,39 @@ namespace HW2.Controllers
         }
 
         [HttpGet]
-        public IActionResult getStudentById(int id)
+        public IActionResult GetStudentById(int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            if (_myListStudents.List.ContainsKey(id))
-                return Json(_myListStudents.List[id]);
-            else
-                return BadRequest(ModelState);
+            var student = _myListStudents.List.Find(x => x.ID == id);
+            return View("GetStudentById", student);
         }
 
         [HttpGet]
-        public IActionResult updateStudent(int id, string fio, string birthday)
+        public IActionResult EditStudent(int id)
+        {
+            var student = _myListStudents.List.Find(x => x.ID == id);
+            return View("UpdateStudent", student);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateStudent(Student student)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            if (_myListStudents.List.ContainsKey(id))
-            {
-                _myListStudents.List[id].Birthday = DateTime.Parse(birthday);
-                _myListStudents.List[id].FIO = fio;
-                return Json(_myListStudents.List[id]);
-            }
-            else
-            {
-                _myListStudents.List.Add(id, new Student() { ID = id, Birthday = DateTime.Parse(birthday), FIO = fio });
-                return Json(_myListStudents.List[id]);
-            }
+                return EditStudent(student.ID);
+            _myListStudents.List.RemoveAll(x => x.ID == student.ID);
+            _myListStudents.List.Add(student);
+            return View("GetStudentById", student);
         }
 
         [HttpGet]
-        public IActionResult deleteStudent(int id)
+        public IActionResult DeleteStudent(int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            if (_myListStudents.List.ContainsKey(id))
+            var student = _myListStudents.List.Find(x => x.ID == id);
+            if(student != null)
             {
-                _myListStudents.List.Remove(id);
-                return getAllStudents();
+                _myListStudents.List.RemoveAll(x => x.ID == id);
             }
-            else
-                return BadRequest(ModelState);
+            return View("Index", _myListStudents);
         }
 
-        [HttpGet]
-        public IActionResult getAllStudents()
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            //var result = string.Empty;
-            //foreach (var student in _myListStudents.List)
-            //    result += student.Value.ToString()+"\n";
-            return Json(_myListStudents);
-        }
     }
 }

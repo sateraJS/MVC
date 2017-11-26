@@ -1,0 +1,35 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "Новый студент";
+}
+
+<div id="student">
+    @using (Html.BeginForm("CreateNewStudent", "Students", @Model, FormMethod.Post))
+    {
+        <table title="Cтудент">
+            <tr>
+                <td>@Html.DisplayNameFor(x => x.LastName)</td>
+                <td>
+                    @Html.EditorFor(x => x.LastName)
+                    @Html.ValidationMessageFor(x => x.LastName)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x => x.FirstName)</td>
+                <td>
+                    @Html.EditorFor(x => x.FirstName)
+                    @Html.ValidationMessageFor(x => x.FirstName)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x => x.Birthday)</td>
+                <td>
+                    @Html.EditorFor(x => x.Birthday)
+                    @Html.ValidationMessageFor(x => x.Birthday)
+                </td>
+            </tr>
+        </table>
+
+        <button class="btn btn-primary" type="submit">Создать</button>
+    }
+</div>
