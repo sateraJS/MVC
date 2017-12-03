@@ -1,5 +1,7 @@
 ﻿using HW2.Models;
+using HW2.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +11,16 @@ namespace HW2.Controllers
 {
     public class StudentsController : Controller
     {
-        private static Students _myListStudents;// = new Students() { List = new Dictionary<int, Student>() { { 1, new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), FIO = "Иванов_Иван_Иванович" } } } };
-        
-        public IActionResult Index()
+        private readonly IStudentService _service;
+
+        public StudentsController(IStudentService studentService)
         {
-            if (_myListStudents == null)
-            {
-                _myListStudents = new Students();
-                _myListStudents.List = new List<Student>();
-                _myListStudents.List.Add(new Student() { ID = 1, Birthday = DateTime.Parse("01.01.1990"), LastName = "Иванов", FirstName = "Иван" });
-                _myListStudents.List.Add(new Student() { ID = 2, Birthday = DateTime.Parse("10.09.1992"), LastName = "Петров", FirstName = "Петр" });
-                _myListStudents.List.Add(new Student() { ID = 3, Birthday = DateTime.Parse("13.08.1993"), LastName = "Сидоров", FirstName = "Илья" });
-            }
-            return View(_myListStudents);
+            _service = studentService;
+        }
+
+        public IActionResult Index([FromServices]IStudentService service)
+        {
+            return View(service.GetStudents());
         }
 
         [HttpGet]
@@ -38,9 +37,9 @@ namespace HW2.Controllers
                 return BadRequest(ModelState);
             try
             {
-                student.ID = _myListStudents.List.Max(x => x.ID) + 1;
-                _myListStudents.List.Add(student);
-                var newStudent = _myListStudents.List.FirstOrDefault(x => x.ID == student.ID);
+                student.ID = _service.GetStudents().List.Count > 0 ? _service.GetStudents().List.Max(x=>x.ID) +1 : 0;
+                _service.AddStudent(student);
+                var newStudent = _service.GetStudent(student.ID);
                 return View("GetStudentById", newStudent);
             }
             catch(Exception e)
@@ -53,14 +52,15 @@ namespace HW2.Controllers
         [HttpGet]
         public IActionResult GetStudentById(int id)
         {
-            var student = _myListStudents.List.Find(x => x.ID == id);
+            var service = HttpContext.RequestServices.GetService<IStudentService>();
+            var student = service.GetStudent(id);
             return View("GetStudentById", student);
         }
 
         [HttpGet]
         public IActionResult EditStudent(int id)
         {
-            var student = _myListStudents.List.Find(x => x.ID == id);
+            var student = _service.GetStudent(id);
             return View("UpdateStudent", student);
         }
 
@@ -69,20 +69,21 @@ namespace HW2.Controllers
         {
             if (!ModelState.IsValid)
                 return EditStudent(student.ID);
-            _myListStudents.List.RemoveAll(x => x.ID == student.ID);
-            _myListStudents.List.Add(student);
+            var service = ActivatorUtilities.CreateInstance<StudentService>(HttpContext.RequestServices);
+            service.RemoveStudent(student.ID);
+            service.AddStudent(student);
             return View("GetStudentById", student);
         }
 
         [HttpGet]
         public IActionResult DeleteStudent(int id)
         {
-            var student = _myListStudents.List.Find(x => x.ID == id);
-            if(student != null)
+            var student = _service.GetStudent(id);
+            if (student != null)
             {
-                _myListStudents.List.RemoveAll(x => x.ID == id);
+                _service.RemoveStudent(student.ID);
             }
-            return View("Index", _myListStudents);
+            return View("Index", _service.GetStudents());
         }
 
     }

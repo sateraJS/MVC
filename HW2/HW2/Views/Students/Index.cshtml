@@ -1,7 +1,12 @@
-﻿@model Students
+﻿@using HW2.Services
+@model Students
 @{
     ViewData["Title"] = "Студенты";
 }
+
+@inject ITestService service
+
+<div>@service.GetString()</div>
 <div id="students">
     <a class="btn btn-primary" href="@Url.Action("CreateStudent", "Students")">Добавить студента</a>
     <h5>
