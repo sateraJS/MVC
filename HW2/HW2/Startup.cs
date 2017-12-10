@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using HW2.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace HW2
 {
@@ -19,18 +20,29 @@ namespace HW2
 
         public IConfiguration Configuration { get; }
 
+        private readonly string ConnectionString =
+            @"Data Source=(localdb)\MSSQLLocalDB;
+            Initial Catalog=StudentsDB;
+            Integrated Security=True;
+            Connect Timeout=30;
+            Encrypt=False;
+            TrustServerCertificate=True;
+            ApplicationIntent=ReadWrite;
+            MultiSubnetFailover=False";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IStudentService, StudentService>(StudentServiceFactory); 
-            services.AddSingleton<StartListStudents>();
+            services.AddDbContext<StudentDbContext>(x => x.UseSqlServer(ConnectionString));
+
+            services.AddTransient<IStudentService, StudentService>(StudentServiceFactory);             
             services.AddTransient<ITestService, TestService>(TestServiceFactory);
 
             services.AddMvc();
         }
         private StudentService StudentServiceFactory(IServiceProvider serviceProvider)
         {
-            return new StudentService(serviceProvider.GetService<StartListStudents>());
+            return new StudentService(serviceProvider.GetService<StudentDbContext>());
         }
 
         private TestService TestServiceFactory(IServiceProvider serviceProvider)

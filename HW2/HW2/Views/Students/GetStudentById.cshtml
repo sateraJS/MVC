@@ -6,12 +6,12 @@
 <div id="student">
     <div>
         @Html.ActionLink("На главную", "Index", "Students")
-        <a class="btn btn-primary" href="@Url.Action("EditStudent", "Students", new {id = Model.ID})">Редактировать</a>
+        <a class="btn btn-primary" href="@Url.Action("EditStudent", "Students", new {id = Model.Id})">Редактировать</a>
     </div>
     <table title="Cтудент">
         <tr>
-            <td>@Html.DisplayNameFor(x => x.ID): </td>
-            <td>@Html.DisplayFor(x => x.ID)</td>
+            <td>@Html.DisplayNameFor(x => x.Id): </td>
+            <td>@Html.DisplayFor(x => x.Id)</td>
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(x => x.LastName): </td>

@@ -6,11 +6,11 @@
 <div style="@padding">
     <table>
         <tbody>
-            <tr><td>id:</td><td>@Html.DisplayFor(x => x.ID)</td></tr>
+            <tr><td>id:</td><td>@Html.DisplayFor(x => x.Id)</td></tr>
             <tr><td>Фамилия:</td><td>@Html.DisplayFor(x => x.LastName)</td></tr>
             <tr><td>Имя:</td><td>@Html.DisplayFor(x => x.FirstName)</td></tr>
             <tr><td>Дата рождения:</td><td>@Html.DisplayFor(x => x.Birthday)</td></tr>
-            <tr><td>@Html.ActionLink("Открыть карточку", "GetStudentById", "Students", new { id = Model.ID })</td></tr>
+            <tr><td>@Html.ActionLink("Открыть карточку", "GetStudentById", "Students", new { id = Model.Id })</td></tr>
         </tbody>
     </table>
     <br></br>

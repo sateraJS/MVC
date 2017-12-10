@@ -6,7 +6,7 @@
 @using (Html.BeginForm("UpdateStudent", "Students", Model, FormMethod.Post))
 {
     <div>
-        <a class="btn btn-primary" href="@Url.Action("DeleteStudent", "Students", new {id = Model.ID})">Удалить студента</a>
+        <a class="btn btn-primary" href="@Url.Action("DeleteStudent", "Students", new {id = Model.Id})">Удалить студента</a>
     </div>
     <table title="Cтудент">
         <tr>

@@ -8,34 +8,40 @@ namespace HW2.Services
 {
     public class StudentService: IStudentService
     {
-        private readonly StartListStudents _myListStudents;
+        private readonly StudentDbContext _context;
 
-        public StudentService(StartListStudents myListStudents)
+        public StudentService(StudentDbContext context)
         {
-            if (myListStudents == null)
-                throw new ArgumentNullException(nameof(myListStudents));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
-            _myListStudents = myListStudents;
+            _context = context;
         }
 
         public Students GetStudents()
         {
-            return _myListStudents.GetStudents();
+            var students = new Students();
+            students.List = _context.Students.ToList();
+            return students;
         }
 
         public Student GetStudent(int id)
         {
-            return _myListStudents.GetStudents().List.FirstOrDefault(x => x.ID == id);
+            return _context.Students.FirstOrDefault(x => x.Id == id);
         }
 
         public void AddStudent(Student student)
         {
-            _myListStudents.AddStudent(student);
+            student.Id = 0;
+            _context.Students.Add(student);
+            _context.SaveChanges();
         }
 
         public void RemoveStudent(int id)
         {
-            _myListStudents.RemoveStudent(id);
+            var student = _context.Students.FirstOrDefault(x => x.Id == id);
+            _context.Students.Remove(student);
+            _context.SaveChanges();
         }
     }
 }

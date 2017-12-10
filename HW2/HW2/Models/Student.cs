@@ -10,7 +10,7 @@ namespace HW2.Models
     {
         //[Required]
         //[IdValidation]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Display(Name = "Фамилия")]
         [Required]
@@ -27,7 +27,7 @@ namespace HW2.Models
 
         public string ToString()
         {
-            return string.Format("id = {0}; ФИ = {1} {2}; Дата рождения = {3}", ID, LastName, FirstName, Birthday);
+            return string.Format("id = {0}; ФИ = {1} {2}; Дата рождения = {3}", Id, LastName, FirstName, Birthday);
         }
     }
     public class Students

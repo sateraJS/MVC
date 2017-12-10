@@ -34,19 +34,17 @@ namespace HW2.Controllers
         public IActionResult CreateNewStudent(Student student)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return CreateStudent();
             try
             {
-                student.ID = _service.GetStudents().List.Count > 0 ? _service.GetStudents().List.Max(x=>x.ID) +1 : 0;
                 _service.AddStudent(student);
-                var newStudent = _service.GetStudent(student.ID);
+                var newStudent = _service.GetStudent(student.Id);
                 return View("GetStudentById", newStudent);
             }
             catch(Exception e)
             {
-                return BadRequest(ModelState);
+                return CreateStudent();
             }
-
         }
 
         [HttpGet]
@@ -68,9 +66,10 @@ namespace HW2.Controllers
         public IActionResult UpdateStudent(Student student)
         {
             if (!ModelState.IsValid)
-                return EditStudent(student.ID);
-            var service = ActivatorUtilities.CreateInstance<StudentService>(HttpContext.RequestServices);
-            service.RemoveStudent(student.ID);
+                return EditStudent(student.Id);
+            var context = HttpContext.RequestServices.GetService<StudentDbContext>();
+            var service = ActivatorUtilities.CreateInstance<StudentService>(HttpContext.RequestServices, context);
+            service.RemoveStudent(student.Id);
             service.AddStudent(student);
             return View("GetStudentById", student);
         }
@@ -81,7 +80,7 @@ namespace HW2.Controllers
             var student = _service.GetStudent(id);
             if (student != null)
             {
-                _service.RemoveStudent(student.ID);
+                _service.RemoveStudent(student.Id);
             }
             return View("Index", _service.GetStudents());
         }
