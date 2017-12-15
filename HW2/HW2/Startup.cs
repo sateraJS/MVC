@@ -22,7 +22,7 @@ namespace HW2
 
         private readonly string ConnectionString =
             @"Data Source=(localdb)\MSSQLLocalDB;
-            Initial Catalog=StudentsDB;
+            Initial Catalog=StudentsDB2;
             Integrated Security=True;
             Connect Timeout=30;
             Encrypt=False;

@@ -18,6 +18,8 @@ namespace HW2
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>().ToTable("Students");
+            modelBuilder.Entity<Student>().HasKey(x => x.Id);
+            modelBuilder.Entity<Student>().Property(x => x.FirstName).HasMaxLength(50);
         }
     }
 }
