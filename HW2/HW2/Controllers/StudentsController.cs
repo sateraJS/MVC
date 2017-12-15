@@ -13,12 +13,10 @@ namespace HW2.Controllers
     public class StudentsController : Controller
     {
         private readonly IStudentService _service;
-        //private readonly IConfiguration _configuration;
 
-        public StudentsController(IStudentService studentService, IConfiguration configuration)
+        public StudentsController(IStudentService studentService)
         {
             _service = studentService;
-            //_configuration = configuration;
         }
 
         public IActionResult Index([FromServices]IStudentService service)
