@@ -1,6 +1,7 @@
 ﻿using HW2.Models;
 using HW2.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace HW2.Controllers
     public class StudentsController : Controller
     {
         private readonly IStudentService _service;
+        //private readonly IConfiguration _configuration;
 
-        public StudentsController(IStudentService studentService)
+        public StudentsController(IStudentService studentService, IConfiguration configuration)
         {
             _service = studentService;
+            //_configuration = configuration;
         }
 
         public IActionResult Index([FromServices]IStudentService service)

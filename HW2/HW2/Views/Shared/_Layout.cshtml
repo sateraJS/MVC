@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -41,6 +43,8 @@
         @RenderBody()
         <hr />
         <footer>
+            <p>ФИО: @Configuration["MyInfo:FIO"]</p>
+            <p>Почта: @Configuration["MyInfo:Email"]</p>
             <p>&copy; 2017 - HW2</p>
         </footer>
     </div>

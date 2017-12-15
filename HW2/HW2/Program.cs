@@ -19,6 +19,10 @@ namespace HW2
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddJsonFile("Config/MyConfig.json", true, true);
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
